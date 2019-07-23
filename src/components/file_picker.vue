@@ -9,17 +9,35 @@
           </button>
         </div>
         <div class="modal-body">
-          <div v-if="showSpinner()" role="status">
-            <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate spinning">Loading...</span>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-5">
+                <div class="panel panel-default">
+                  <div class="panel-heading">Favorites</div>
+                  <ul class="list-group">
+                    <li
+                      class="list-group-item"
+                      v-for="entry in fs_favorites"
+                      v-on:dblclick="entryDblClicked(entry, $event)"
+                    ><span class="fa fa-folder">&nbsp;</span>{{entry.title}}</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-sm-7">
+                <div v-if="showSpinner()" role="status">
+                  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate spinning">Loading...</span>
+                </div>
+                <ul class="list-group overflow-auto" v-if="!showSpinner()">
+                  <li
+                    class="list-group-item"
+                    v-for="entry in fs_entries"
+                    v-on:click="entryClicked(entry, $event)"
+                    v-on:dblclick="entryDblClicked(entry, $event)"
+                  ><span :class="iconClasses(entry)">&nbsp;</span>{{entry.name}}</li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <ul class="list-group overflow-auto" v-if="!showSpinner()">
-            <li
-              class="list-group-item"
-              v-for="entry in fs_entries"
-              v-on:click="entryClicked(entry, $event)"
-              v-on:dblclick="entryDblClicked(entry, $event)"
-            ><span :class="iconClasses(entry)">&nbsp;</span>{{entry.name}}</li>
-          </ul>
         </div>
         <div class="modal-footer">
           <div type="button" class="btn btn-primary" v-on:click="save" data-dismiss="modal">Select</div>
@@ -47,11 +65,12 @@ export default {
   props: ['input', 'fs'],
   data: function() {
     return {
+      fs_favorites: [],
       fs_entries: [],
       loading: true,
       original_value: '',
       path: '',
-      selected: null
+      selected: null,
     }
   },
   methods: {
@@ -89,8 +108,11 @@ export default {
       this.input.value = pathmod.resolve(this.path, entry.name);
     },
     entryDblClicked: function(entry, event) {
-      if(entry.size === 'dir') {
+      if(entry.size && entry.size === 'dir') {
         this.path = pathmod.resolve(this.path, entry.name);
+        this.updateEntries(this.path);
+      } else {
+        this.path = pathmod.resolve(this.path, entry.href);
         this.updateEntries(this.path);
       }
     },
@@ -114,6 +136,7 @@ export default {
       self.path = self.fs.last_path();
       self.original_value = self.input.value;
       self.updateEntries(self.path);
+      self.fs_favorites = self.fs.favorites;
     });
   },
   computed: {

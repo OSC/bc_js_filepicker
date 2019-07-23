@@ -9,6 +9,7 @@ export default class FileExplorer {
     // Fallback to root if fetch fails
     this.home_dir = window.localStorage.getItem('files_home_dir') || '/';
     this.fs_api_root = '/pun/sys/files/api/v1/fs/';
+    this.favorites = JSON.parse(window.localStorage.getItem('files_favorites')) || [];
   }
 
   /**
@@ -25,14 +26,12 @@ export default class FileExplorer {
     }
 
     let self = this;
+    // Note that this request isn't really necessary if called on a dashboard child page
     fetch('/pun/sys/dashboard').then(function(response) {
       response.text().then(function(text) {
-        self.home_dir = jQuery(text)
-          .find('li[title="Files"] a[title="Home Directory"]')
-          .first()
-          .attr('href')
-          .replace('/pun/sys/files/fs', '');
+        self.setFavorites();
 
+        self.home_dir = self.favorites[0].href;
         window.localStorage.setItem('files_home_dir', self.home_dir);
 
         if(self.last_path() === '/') {
@@ -42,6 +41,17 @@ export default class FileExplorer {
         callback();
       });
     });
+  }
+
+  setFavorites(html) {
+    this.favorites = jQuery('li[title="Files"] a[title]').toArray().map((element) => {
+      return {
+        title: element.title,
+        href: element.href.replace(new RegExp('^.+/pun/sys/files/fs'), '')
+      };
+    });
+
+    window.localStorage.setItem('files_favorites', JSON.stringify(this.favorites));
   }
 
   /**
