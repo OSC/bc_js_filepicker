@@ -9,9 +9,6 @@ export default class FileExplorer {
     // Fallback to root if fetch fails
     this.home_dir = window.localStorage.getItem('files_home_dir') || '/';
     this.fs_api_root = '/pun/sys/files/api/v1/fs/';
-    if(this.home_dir === '/') {
-      this.init_home_dir();
-    }
   }
 
   /**
@@ -21,7 +18,12 @@ export default class FileExplorer {
    * 
    * @return {void}
    */
-  init_home_dir() {
+  init(callback) {
+    if(this.home_dir != '/') {
+      callback();
+      return;
+    }
+
     let self = this;
     fetch('/pun/sys/dashboard').then(function(response) {
       response.text().then(function(text) {
@@ -32,6 +34,12 @@ export default class FileExplorer {
           .replace('/pun/sys/files/fs', '');
 
         window.localStorage.setItem('files_home_dir', self.home_dir);
+
+        if(self.last_path() === '/') {
+          self.update_last_location(self.home_dir);
+        }
+
+        callback();
       });
     });
   }

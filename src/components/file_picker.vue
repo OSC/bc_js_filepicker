@@ -73,6 +73,7 @@ export default {
           json.files.filter((entry) => { return ! entry.name.startsWith('.') })
           );
         self.loading = false;
+        self.fs.update_last_location(path);
       });
     },
     changeSelection(event) {
@@ -108,9 +109,12 @@ export default {
     }
   },
   mounted: function() {
-    this.path = this.fs.last_path();
-    this.original_value = this.input.value;
-    this.updateEntries(this.path);
+    let self = this;
+    this.fs.init(() => {
+      self.path = self.fs.last_path();
+      self.original_value = self.input.value;
+      self.updateEntries(self.path);
+    });
   },
   computed: {
     modalId: function() {
