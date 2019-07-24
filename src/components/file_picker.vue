@@ -131,13 +131,11 @@ export default {
     }
   },
   mounted: function() {
-    let self = this;
-    this.fs.init(() => {
-      self.path = self.fs.last_path();
-      self.original_value = self.input.value;
-      self.updateEntries(self.path);
-      self.fs_favorites = self.fs.favorites;
-    });
+    this.fs.init()
+    this.path = this.fs.last_path();
+    this.original_value = this.input.value;
+    this.updateEntries(this.path);
+    this.fs_favorites = this.fs.favorites;
   },
   computed: {
     modalId: function() {

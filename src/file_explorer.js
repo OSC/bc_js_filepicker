@@ -1,5 +1,4 @@
 import * as pathmod from 'path-browserify';
-import * as jQuery from 'jquery';
 
 /**
  * Interface to OnDemand's File Explorer API
@@ -19,37 +18,28 @@ export default class FileExplorer {
    * 
    * @return {void}
    */
-  init(callback) {
+  init() {
     if(this.home_dir != '/') {
-      callback();
       return;
     }
 
-    let self = this;
-    // Note that this request isn't really necessary if called on a dashboard child page
-    fetch('/pun/sys/dashboard').then(function(response) {
-      response.text().then(function(text) {
-        self.setFavorites();
+    this.setFavorites();
 
-        self.home_dir = self.favorites[0].href;
-        window.localStorage.setItem('files_home_dir', self.home_dir);
+    this.home_dir = this.favorites[0].href;
+    window.localStorage.setItem('files_home_dir', this.home_dir);
 
-        if(self.last_path() === '/') {
-          self.update_last_location(self.home_dir);
-        }
-
-        callback();
-      });
-    });
+    if(this.last_path() === '/') {
+      this.update_last_location(this.home_dir);
+    }
   }
 
   setFavorites(html) {
-    this.favorites = jQuery('li[title="Files"] a[title]').toArray().map((element) => {
-      return {
+    for(let element of document.querySelectorAll('li[title="Files"] a[title]').values()) {
+      this.favorites.push({
         title: element.title,
         href: element.href.replace(new RegExp('^.+/pun/sys/files/fs'), '')
-      };
-    });
+      });
+    }
 
     window.localStorage.setItem('files_favorites', JSON.stringify(this.favorites));
   }
