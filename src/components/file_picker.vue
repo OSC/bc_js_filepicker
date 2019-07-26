@@ -24,10 +24,13 @@
                 </div>
               </div>
               <div class="col-sm-7">
-                <div v-if="showSpinner()" role="status">
+                <div class="alert alert-danger" v-if="showError()" role="alert">
+                  An error has occurred please try again later. If this persists please contact user support.
+                </div>
+                <div v-else-if="showSpinner()" role="status">
                   <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate spinning">Loading...</span>
                 </div>
-                <ul class="list-group overflow-auto" v-if="!showSpinner()">
+                <ul class="list-group overflow-auto" v-else="!showSpinner()">
                   <li
                     class="list-group-item"
                     v-for="entry in fs_entries"
@@ -71,6 +74,7 @@ export default {
       original_value: '',
       path: '',
       selected: null,
+      error: null
     }
   },
   methods: {
@@ -80,20 +84,40 @@ export default {
     showSpinner: function() {
       return this.fs_entries.length === 0 || this.loading;
     },
+    showError: function() {
+      return !! this.error;
+    },
     updateEntries: function(path) {
       let self = this;
       this.loading = true;
-      this.fs.list_path(path, function(json) {
-        // add fs entries and the back directory
-        self.fs_entries = [{
+      this.error = false;
+      this.fs.list_path(path, function(response) {
+        if(response.ok) {
+          response.json().then(
+            (json) => self.updateEntriesSuccess(json, path)
+          ).catch(
+            () => { self.updateEntriesFailure(response) }
+          );
+        } else {
+          self.updateEntriesFailure(response);
+        }
+      });
+    },
+    updateEntriesSuccess: function(json, path) {
+      // add fs entries and the back directory
+      this.fs_entries = [{
           size: 'dir',
           name: '..'
-        }].concat(
-          json.files.filter((entry) => { return ! entry.name.startsWith('.') })
-          );
-        self.loading = false;
-        self.fs.update_last_location(path);
-      });
+      }].concat(
+        json.files.filter((entry) => { return ! entry.name.startsWith('.') })
+        );
+      this.loading = false;
+      this.error = false;
+      this.fs.update_last_location(path);
+    },
+    updateEntriesFailure: function(response) {
+      this.loading = false;
+      this.error = true;
     },
     changeSelection(event) {
       if(this.selected) {

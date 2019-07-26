@@ -53,9 +53,9 @@ export default class FileExplorer {
   list_path(path, callback) {
     fetch(this.fs_api_root + path.replace(/(^\/)/, ''), {
       credentials: 'same-origin'  // required to produce intended behavior in older browsers
-    }).then(function(response) {
-      response.json().then(callback);
-    });
+    }).then(
+      callback
+    )
   }
 
   last_path() {
