@@ -25,7 +25,10 @@
               </div>
               <div class="col-sm-7">
                 <div class="alert alert-danger" v-if="showError()" role="alert">
-                  An error has occurred please try again later. If this persists please contact user support.
+                  The following error has occurred: 
+                  <code>{{error}}</code><br />
+                  If this persists please contact user support.
+                  
                 </div>
                 <div v-else-if="showSpinner()" role="status">
                   <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate spinning">Loading...</span>
@@ -116,7 +119,16 @@ export default {
     },
     updateEntriesFailure: function(response) {
       this.loading = false;
-      this.error = true;
+
+      if(response.bodyUsed) {  // JSON parse failed
+        this.error = 'Parsing response failed.'
+      } else { // Error message from server e.g. EACCES
+        response.text().then((text) => {
+          this.error = text;
+        });
+      }
+
+      console.error(response);
     },
     changeSelection(event) {
       if(this.selected) {
