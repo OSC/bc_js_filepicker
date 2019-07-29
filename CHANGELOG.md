@@ -6,9 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ## [0.1.0] - 2019-07-24
+### Added
+
+- Improved user-visible error messaging
+
 ### Changed
+
 - Changed FileExplorer to use the current page's File menu to initialize the favorites menu
 - Reduced form.js size by 70kb
+
+### Fixed
+
+- Fixed credential error
 
 ## [0.0.1] - 2019-07-20
 ### Added
