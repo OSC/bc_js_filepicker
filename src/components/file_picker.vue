@@ -24,11 +24,18 @@
                 </div>
               </div>
               <div class="col-sm-7">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li :class="slugClass(index)"
+                        v-for="(slug, index) in slugs"
+                        aria-current="page"><a v-on:click="entryDblClicked({size: 'breadcrumb', path: pathToHere(index)}, $event)">{{slug}}</a>
+                    </li>
+                  </ol>
+                </nav>
                 <div class="alert alert-danger" v-if="showError()" role="alert">
                   The following error has occurred: 
                   <code>{{error}}</code><br />
                   If this persists please contact user support.
-                  
                 </div>
                 <div v-else-if="showSpinner()" role="status">
                   <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate spinning">Loading...</span>
@@ -145,11 +152,14 @@ export default {
     entryDblClicked: function(entry, event) {
       if(entry.size && entry.size === 'dir') {
         this.path = pathmod.resolve(this.path, entry.name);
-        this.updateEntries(this.path);
+      } else if(entry.size && entry.size === 'breadcrumb') {
+        event.preventDefault();
+        this.path = entry.path;
       } else {
         this.path = pathmod.resolve(this.path, entry.href);
-        this.updateEntries(this.path);
       }
+
+      this.updateEntries(this.path);
     },
     save: function() {
       this.original_value = this.input.value;
@@ -157,12 +167,21 @@ export default {
     cancel() {
       this.input.value = this.original_value;
     },
-    visibilityChanged (isVisible, entry) {
+    visibilityChanged: function(isVisible, entry) {
       if(isVisible) {
         this.save();
       } else {
         this.cancel();
       }
+    },
+    slugClass: function(index) {
+      return this.last(index) ? 'breadcrumb-item active' : 'breadcrumb-item';
+    },
+    last: function(index) {
+      return index === (this.slugs.length - 1);
+    },
+    pathToHere: function(index) {
+      return pathmod.resolve(...this.path.split(pathmod.sep).slice(0, index + 1));
     }
   },
   mounted: function() {
@@ -175,6 +194,9 @@ export default {
   computed: {
     modalId: function() {
       return (this.input) ? 'modal-for-' + this.input.id : '';
+    },
+    slugs: function() {
+      return this.path.split(pathmod.sep);
     }
   }
 }
