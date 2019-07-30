@@ -1,6 +1,6 @@
 <template>
   <div :id="modalId" class="modal" tabindex="-1" role="dialog" v-observe-visibility="visibilityChanged">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">File Select</h5>
@@ -32,6 +32,14 @@
                     </li>
                   </ol>
                 </nav>
+
+                  <div class="form-group row">
+                    <label :for="filterId" class="col-sm-2 col-form-label">Filter</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" :id="filterId" placeholder="file.txt" v-on:input="updateEntriesFilter()">
+                    </div>
+                  </div>
+
                 <div class="alert alert-danger" v-if="showError()" role="alert">
                   The following error has occurred: 
                   <code>{{error}}</code><br />
@@ -43,7 +51,7 @@
                 <ul class="list-group overflow-auto" v-else="!showSpinner()">
                   <li
                     class="list-group-item"
-                    v-for="entry in fs_entries"
+                    v-for="entry in filteredEntries()"
                     v-on:click="entryClicked(entry, $event)"
                     v-on:dblclick="entryDblClicked(entry, $event)"
                   ><span :class="iconClasses(entry)">&nbsp;</span>{{entry.name}}</li>
@@ -77,13 +85,15 @@ export default {
   props: ['input', 'fs'],
   data: function() {
     return {
-      fs_favorites: [],
+      entriesFilter: null,
+      error: null,
+      filter_input: null,
       fs_entries: [],
+      fs_favorites: [],
       loading: true,
       path: '',
       selected_element: null,
-      staged_value: null,
-      error: null
+      staged_value: null
     }
   },
   methods: {
@@ -137,6 +147,9 @@ export default {
 
       console.error(response);
     },
+    updateEntriesFilter: function() {
+      this.entriesFilter = this.filter_input.value;
+    },
     changeSelection(event) {
       if(this.selected_element) {
         this.selected_element.classList.remove('active');  
@@ -170,6 +183,7 @@ export default {
     },
     visibilityChanged: function(isVisible, entry) {
       if(isVisible) {
+        this.filter_input.value = '';
         this.updateEntries(this.path);
       } else {
         this.cancel();
@@ -183,18 +197,31 @@ export default {
     },
     pathToHere: function(index) {
       return pathmod.resolve(...this.path.split(pathmod.sep).slice(0, index + 1));
+    },
+    filteredEntries: function() {
+      if(this.entriesFilter) {
+        let self = this;
+        return this.fs_entries.filter(
+          (entry) => { return !! entry.name.match(self.entriesFilter) }
+        );  
+      } else {
+        return this.fs_entries;
+      }
     }
   },
   mounted: function() {
     this.fs.init()
     this.path = this.fs.last_path();
-    // this.staged_value = this.input.value;
+    this.filter_input = this.$el.querySelector('#' + this.filterId);
     this.updateEntries(this.path);
     this.fs_favorites = this.fs.favorites;
   },
   computed: {
     modalId: function() {
       return (this.input) ? 'modal-for-' + this.input.id : '';
+    },
+    filterId: function() {
+      return 'filter-for-' + this.input.id;
     },
     slugs: function() {
       return this.path.split(pathmod.sep);
