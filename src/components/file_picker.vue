@@ -41,7 +41,7 @@
                   </div>
 
                 <div class="alert alert-danger" v-if="showError()" role="alert">
-                  The following error has occurred: 
+                  The following error has occurred:
                   <code>{{error}}</code><br />
                   If this persists please contact user support.
                 </div>
@@ -113,7 +113,7 @@ export default {
       this.fs.list_path(path, function(response) {
         if(response.ok) {
           response.json().then(
-            (json) => self.updateEntriesSuccess(json, path)
+            (json) => { self.updateEntriesSuccess(json, path) }
           ).catch(
             () => { self.updateEntriesFailure(response) }
           );
@@ -152,9 +152,9 @@ export default {
     },
     changeSelection(event) {
       if(this.selected_element) {
-        this.selected_element.classList.remove('active');  
+        this.selected_element.classList.remove('active');
       }
-      
+
       this.selected_element = event.target;
       this.selected_element.classList.add('active');
     },
@@ -176,6 +176,7 @@ export default {
     },
     save: function() {
       this.path = pathmod.dirname(this.staged_value);
+      this.fs.update_last_location(this.path);
       this.input.value = this.staged_value;
     },
     cancel() {
@@ -200,10 +201,13 @@ export default {
     },
     filteredEntries: function() {
       if(this.entriesFilter) {
-        let self = this;
-        return this.fs_entries.filter(
-          (entry) => { return !! entry.name.match(self.entriesFilter) }
-        );  
+        try {
+          return this.fs_entries.filter(
+            (entry) => { return !! entry.name.match(this.entriesFilter) }
+          );
+        } catch(error) {
+          return [];
+        }
       } else {
         return this.fs_entries;
       }
@@ -211,9 +215,8 @@ export default {
   },
   mounted: function() {
     this.fs.init()
-    this.path = this.fs.last_path();
+    this.path = pathmod.dirname(this.input.value) || this.fs.last_path();
     this.filter_input = this.$el.querySelector('#' + this.filterId);
-    this.updateEntries(this.path);
     this.fs_favorites = this.fs.favorites;
   },
   computed: {
