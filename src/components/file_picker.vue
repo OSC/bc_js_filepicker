@@ -80,9 +80,9 @@ export default {
       fs_favorites: [],
       fs_entries: [],
       loading: true,
-      original_value: '',
       path: '',
-      selected: null,
+      selected_element: null,
+      staged_value: null,
       error: null
     }
   },
@@ -138,16 +138,16 @@ export default {
       console.error(response);
     },
     changeSelection(event) {
-      if(this.selected) {
-        this.selected.classList.remove('active');  
+      if(this.selected_element) {
+        this.selected_element.classList.remove('active');  
       }
       
-      this.selected = event.target;
-      this.selected.classList.add('active');
+      this.selected_element = event.target;
+      this.selected_element.classList.add('active');
     },
     entryClicked: function(entry, event) {
       this.changeSelection(event);
-      this.input.value = pathmod.resolve(this.path, entry.name);
+      this.staged_value = pathmod.resolve(this.path, entry.name);
     },
     entryDblClicked: function(entry, event) {
       if(entry.size && entry.size === 'dir') {
@@ -162,14 +162,15 @@ export default {
       this.updateEntries(this.path);
     },
     save: function() {
-      this.original_value = this.input.value;
+      this.path = pathmod.dirname(this.staged_value);
+      this.input.value = this.staged_value;
     },
     cancel() {
-      this.input.value = this.original_value;
+      // TODO
     },
     visibilityChanged: function(isVisible, entry) {
       if(isVisible) {
-        this.save();
+        this.updateEntries(this.path);
       } else {
         this.cancel();
       }
@@ -187,7 +188,7 @@ export default {
   mounted: function() {
     this.fs.init()
     this.path = this.fs.last_path();
-    this.original_value = this.input.value;
+    // this.staged_value = this.input.value;
     this.updateEntries(this.path);
     this.fs_favorites = this.fs.favorites;
   },
