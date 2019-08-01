@@ -180,7 +180,7 @@ export default {
       this.input.value = this.staged_value;
     },
     cancel() {
-      // TODO
+      // Nothing needed at the moment
     },
     visibilityChanged: function(isVisible, entry) {
       if(isVisible) {
