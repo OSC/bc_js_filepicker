@@ -19,6 +19,8 @@ Edit your Batch Connect `form.yml` so that the input you want to add a file pick
     readonly: true  # optionally only allow editing through the file picker
 ```
 
+To navigate into a directory double click the entry. To select a directory just use a single click. The current directory may be filtered, and the filtering engine supports plain text and JavaScript-flavored regular expressions.
+
 ## Developing ##
 
 If you have custom logic that you would like to include in your `form.js` then you can clone this project and use it as a base for your own work. This project is managed using [Yarn](https://yarnpkg.com/) and built using [Webpack](https://webpack.js.org/). NodeJS version 10+ is recommended. Note that NodeJS 10+ is only a build-time dependency and OnDemand's regular version of Node does not need to be upgraded in order to use this module.

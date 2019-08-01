@@ -14,13 +14,13 @@
               <div class="col-sm-5">
                 <div class="panel panel-default">
                   <div class="panel-heading">Favorites</div>
-                  <ul class="list-group">
-                    <li
-                      class="list-group-item"
+                  <div class="list-group">
+                    <a
+                      :class="classForCurrentPath(entry)"
                       v-for="entry in fs_favorites"
-                      v-on:dblclick="entryDblClicked(entry, $event)"
-                    ><span class="fa fa-folder">&nbsp;</span>{{entry.title}}</li>
-                  </ul>
+                      v-on:click="entryDblClicked(entry, $event)"
+                    ><span class="fa fa-folder">&nbsp;</span>{{entry.title}}</a>
+                  </div>
                 </div>
               </div>
               <div class="col-sm-7">
@@ -32,14 +32,12 @@
                     </li>
                   </ol>
                 </nav>
-
-                  <div class="form-group row">
-                    <label :for="filterId" class="col-sm-2 col-form-label">Filter</label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" :id="filterId" placeholder="file.txt" v-on:input="updateEntriesFilter()">
-                    </div>
+                <div class="form-group row">
+                  <label :for="filterId" class="col-sm-2 col-form-label">Filter</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" :id="filterId" placeholder="file.txt" v-on:input="updateEntriesFilter()">
                   </div>
-
+                </div>
                 <div class="alert alert-danger" v-if="showError()" role="alert">
                   The following error has occurred:
                   <code>{{error}}</code><br />
@@ -48,14 +46,14 @@
                 <div v-else-if="showSpinner()" role="status">
                   <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate spinning">Loading...</span>
                 </div>
-                <ul class="list-group overflow-auto" v-else="!showSpinner()">
-                  <li
-                    class="list-group-item"
+                <div class="list-group overflow-auto" v-else="!showSpinner()">
+                  <a
+                    :class="classForCurrentPath(entry)"
                     v-for="entry in filteredEntries()"
                     v-on:click="entryClicked(entry, $event)"
                     v-on:dblclick="entryDblClicked(entry, $event)"
-                  ><span :class="iconClasses(entry)">&nbsp;</span>{{entry.name}}</li>
-                </ul>
+                  ><span :class="iconClasses(entry)" :style="iconStyles(entry)">&nbsp;</span>{{entry.name}}</a>
+                </div>
               </div>
             </div>
           </div>
@@ -99,6 +97,9 @@ export default {
   methods: {
     iconClasses: function(entry) {
       return (entry.size === 'dir') ? 'fa fa-folder' : 'fa fa-file';
+    },
+    iconStyles: function(entry) {
+      return (entry.size === 'dir') ? 'color: #eccb00;' : 'color: #e6e6e6;';
     },
     showSpinner: function() {
       return this.fs_entries.length === 0 || this.loading;
@@ -184,6 +185,8 @@ export default {
     },
     visibilityChanged: function(isVisible, entry) {
       if(isVisible) {
+        this.staged_value = this.input.value;
+        this.path = pathmod.dirname(this.input.value);
         this.filter_input.value = '';
         this.updateEntries(this.path);
       } else {
@@ -211,6 +214,16 @@ export default {
       } else {
         return this.fs_entries;
       }
+    },
+    classForCurrentPath: function(entry) {
+      let is_active_favorite = this.path.startsWith(entry.href);
+      let is_active_selection = (
+        this.staged_value &&
+        entry.name &&
+        this.staged_value === pathmod.resolve(this.path, entry.name)
+      );
+
+      return (is_active_favorite || is_active_selection) ? 'list-group-item active' : 'list-group-item';
     }
   },
   mounted: function() {

@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - Improved user-visible error messaging
+- Added filtering
+- Improved look and feel
 
 ### Changed
 
 - Changed FileExplorer to use the current page's File menu to initialize the favorites menu
-- Reduced form.js size by 70kb
+- Reduced form.js size
 
 ### Fixed
 

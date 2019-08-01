@@ -32,10 +32,10 @@ function add_button(id) {
  */
 export function attach_filepickers() {
   let main_div = jQuery('div[role="main"]');
-  let fs = new FileExplorer();
 
   for(let fp_input of filepicker_inputs()) {
   	let fp_id = fp_input.id;
+    let fs = new FileExplorer(fp_id);
     main_div.append(`<div id='filepicker-for-${fp_id}'></div>`)
     add_button(fp_id);
     let vue = new Vue({

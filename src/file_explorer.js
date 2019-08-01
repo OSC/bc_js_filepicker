@@ -4,10 +4,11 @@ import * as pathmod from 'path-browserify';
  * Interface to OnDemand's File Explorer API
  */
 export default class FileExplorer {
-  constructor() {
+  constructor(namespace='') {
     // Fallback to root if fetch fails
     this.home_dir = window.localStorage.getItem('files_home_dir') || '/';
     this.fs_api_root = '/pun/sys/files/api/v1/fs/';
+    this.namespace = namespace;
     this.favorites = JSON.parse(window.localStorage.getItem('files_favorites')) || [];
   }
 
@@ -59,7 +60,7 @@ export default class FileExplorer {
   }
 
   last_path() {
-    return window.localStorage.getItem('files_last_path') || this.home_dir;
+    return window.localStorage.getItem('files_last_path' + this.namespace) || this.home_dir;
   }
 
   /**
@@ -68,6 +69,6 @@ export default class FileExplorer {
    * @return {void}
    */
   update_last_location(path) {
-      window.localStorage.setItem('files_last_path', '' + path);
+      window.localStorage.setItem('files_last_path' + this.namespace, '' + path);
   }
 }
