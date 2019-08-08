@@ -188,6 +188,7 @@ export default {
         this.staged_value = this.input.value;
         this.path = pathmod.dirname(this.input.value);
         this.filter_input.value = '';
+        this.entriesFilter = '';
         this.updateEntries(this.path);
       } else {
         this.cancel();
