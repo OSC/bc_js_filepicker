@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import FilePicker from './components/file_picker.vue';
-import FileExplorer from './file_explorer';
+import {
+  file_system_favorites
+} from './files_api.js';
 
 /**
  * Selects all file picker inputs
@@ -16,24 +18,24 @@ function filepicker_inputs() {
  * File pickers are inputs with a data attribute of filepicker
  */
 export function attach_filepickers() {
-  for(let fp_input of filepicker_inputs()) {
-  	let fp_id = fp_input.id;
-    let fs = new FileExplorer(fp_id);
-    let sacrificial_div = document.createElement('div');
-    fp_input.parentElement.append(sacrificial_div);
+  file_system_favorites().then((favorites) => {
+    for(let fp_input of filepicker_inputs()) {
+      let fp_id = fp_input.id;
+      let sacrificial_div = document.createElement('div');
+      fp_input.parentElement.append(sacrificial_div);
 
-    let vue = new Vue({
-      el: sacrificial_div,
-      render: fn => fn(
-        FilePicker,
-        {
-          props: {
-            input: fp_input,
-            fs: fs,
-            path: fs.last_path()
+      let vue = new Vue({
+        el: sacrificial_div,
+        render: fn => fn(
+          FilePicker,
+          {
+            props: {
+              input: fp_input,
+              fs_favorites: favorites
+            }
           }
-        }
-      )
-    });
-  }
+        )
+      });
+    }
+  });
 }

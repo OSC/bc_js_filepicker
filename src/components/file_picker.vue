@@ -79,6 +79,11 @@
 <script>
 import * as pathmod from 'path-browserify';
 import Vue from 'vue';
+import {
+  last_path,
+  list_path,
+  set_last_path
+} from '../files_api.js';
 
 /**
  * FilePicker
@@ -86,14 +91,13 @@ import Vue from 'vue';
  * Presents a modal to the user allowing them to select files.
  */
 export default {
-  props: ['input', 'fs'],
+  props: ['input', 'fs_favorites'],
   data: function() {
     return {
       entriesFilter: null,
       error: null,
       filter_input: null,
       fs_entries: [],
-      fs_favorites: [],
       loading: true,
       path: '',
       selected_element: null,
@@ -118,16 +122,18 @@ export default {
       let self = this;
       this.loading = true;
       this.error = false;
-      this.fs.list_path(path, function(response) {
+      list_path(path).then((response) => {
         if(response.ok) {
           response.json().then(
             (json) => { self.updateEntriesSuccess(json, path) }
           ).catch(
-            () => { self.updateEntriesFailure(response) }
+            () => {self.updateEntriesFailure(response) }
           );
         } else {
           self.updateEntriesFailure(response);
         }
+      }).catch((error) => {
+        this.error = error;
       });
     },
     updateEntriesSuccess: function(json, path) {
@@ -140,7 +146,7 @@ export default {
         );
       this.loading = false;
       this.error = false;
-      this.fs.update_last_location(path);
+      set_last_path(path);
     },
     updateEntriesFailure: function(response) {
       this.loading = false;
@@ -184,7 +190,7 @@ export default {
     },
     save: function() {
       this.path = pathmod.dirname(this.staged_value);
-      this.fs.update_last_location(this.path);
+      set_last_path(this.path);
       this.input.value = this.staged_value;
       this.hide();
     },
@@ -241,10 +247,8 @@ export default {
     }
   },
   mounted: function() {
-    this.fs.init()
-    this.path = pathmod.dirname(this.input.value) || this.fs.last_path();
+    this.path = pathmod.dirname(this.input.value) || last_path();
     this.filter_input = this.$el.querySelector('#' + this.filterId);
-    this.fs_favorites = this.fs.favorites;
   },
   computed: {
     modalId: function() {
@@ -262,8 +266,31 @@ export default {
 
 <style scoped>
   /* Begin Bulma Modal */
+  /*
+    The MIT License (MIT)
 
-.modal-close {
+    Copyright (c) 2019 Jeremy Thomas
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+  */
+
+  .modal-close {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
