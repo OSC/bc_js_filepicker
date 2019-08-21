@@ -19,7 +19,7 @@
           <div class="modal-body">
             <div class="container-fluid">
               <div class="row">
-                <div class="col-sm-5">
+                <div class="col-sm-5" v-if="showFsFavorites">
                   <div class="panel panel-default">
                     <div class="panel-heading">Favorites</div>
                     <div class="list-group">
@@ -31,7 +31,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-sm-7">
+                <div :class="fsEntryColWidth">
                   <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                       <li :class="slugClass(index)"
@@ -259,6 +259,12 @@ export default {
     },
     slugs: function() {
       return this.path.split(pathmod.sep);
+    },
+    showFsFavorites: function() {
+      return this.fs_favorites.length > 0;
+    },
+    fsEntryColWidth: function() {
+      return (this.showFsFavorites) ? 'col-sm-7' : 'col-sm-12';
     }
   }
 }
