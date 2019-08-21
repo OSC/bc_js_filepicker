@@ -12,7 +12,6 @@
     "css-loader": "^3.1.0",
     "vue": "^2.6.10",
     "vue-loader": "^15.7.1",
-    "vue-observe-visibility": "^0.4.4",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.36.1",
