@@ -1,28 +1,15 @@
-import jQuery from 'jquery';
 import Vue from 'vue';
 import FilePicker from './components/file_picker.vue';
-import FileExplorer from './file_explorer';
+import {
+  file_system_favorites
+} from './files_api.js';
 
 /**
  * Selects all file picker inputs
- * @return {jQuery<HTMLElement>} selected elements
+ * @return {NodeList} selected elements
  */
 function filepicker_inputs() {
-  return jQuery('input[data-filepicker]');
-}
-/**
- * Adds file select button
- * @param {string} id The id of the input element
- */
-function add_button(id) {
-  jQuery('#' + id)
-    .parent()
-    .after(`<button
-              type="button"
-              class="btn btn-primary"
-              style="margin-bottom: 15px;"
-              data-toggle="modal"
-              data-target="#modal-for-${id}">Select File</button>`);
+  return document.querySelectorAll('input[data-filepicker]');
 }
 
 /**
@@ -31,25 +18,24 @@ function add_button(id) {
  * File pickers are inputs with a data attribute of filepicker
  */
 export function attach_filepickers() {
-  let main_div = jQuery('div[role="main"]');
+  file_system_favorites().then((favorites) => {
+    for(let fp_input of filepicker_inputs()) {
+      let fp_id = fp_input.id;
+      let sacrificial_div = document.createElement('div');
+      fp_input.parentElement.append(sacrificial_div);
 
-  for(let fp_input of filepicker_inputs()) {
-  	let fp_id = fp_input.id;
-    let fs = new FileExplorer(fp_id);
-    main_div.append(`<div id='filepicker-for-${fp_id}'></div>`)
-    add_button(fp_id);
-    let vue = new Vue({
-      el: `#filepicker-for-${fp_id}`,
-      render: fn => fn(
-        FilePicker,
-        {
-          props: {
-            input: fp_input,
-            fs: fs,
-            path: fs.last_path()
+      let vue = new Vue({
+        el: sacrificial_div,
+        render: fn => fn(
+          FilePicker,
+          {
+            props: {
+              input: fp_input,
+              fs_favorites: favorites
+            }
           }
-        }
-      )
-    });
-  }
+        )
+      });
+    }
+  });
 }
