@@ -16,8 +16,12 @@ export function set_last_path(path, namespace='') {
   window.localStorage.setItem('files_last_path' + namespace, '' + path);
 }
 
-export function last_path(namespace='') {
-  return window.localStorage.getItem('files_last_path' + namespace) || '/';
+export function last_path(favorites=[], namespace='') {
+  const stored = window.localStorage.getItem('files_last_path' + namespace);
+  const home_dir = (favorites.length > 0) ? favorites[0].href : false;
+  const root = '/';
+  
+  return stored || home_dir || root;
 }
 
 export function list_path(path) {
@@ -40,7 +44,7 @@ export function file_system_favorites() {
       return response.text();
     }).then((html) => {
       return extract_favorites_from_document(
-        new DOMParser().parseFromString(html)
+        new DOMParser().parseFromString(html, 'text/html')
       );
     }).catch((error) => {
       console.error(error);

@@ -146,7 +146,7 @@ export default {
         );
       this.loading = false;
       this.error = false;
-      set_last_path(path);
+      set_last_path(path, this.modalId);
     },
     updateEntriesFailure: function(response) {
       this.loading = false;
@@ -190,7 +190,7 @@ export default {
     },
     save: function() {
       this.path = pathmod.dirname(this.staged_value);
-      set_last_path(this.path);
+      set_last_path(this.path, this.modalId);
       this.input.value = this.staged_value;
       this.hide();
     },
@@ -202,7 +202,7 @@ export default {
 
       if(this.show) {
         this.staged_value = this.input.value;
-        this.path = pathmod.dirname(this.input.value);
+        this.path = this.get_current_path();
         this.filter_input.value = '';
         this.entriesFilter = '';
         this.updateEntries(this.path);
@@ -244,10 +244,13 @@ export default {
       );
 
       return (is_active_favorite || is_active_selection) ? 'list-group-item active' : 'list-group-item';
+    },
+    get_current_path: function() {
+      return ((this.input.value) ? pathmod.dirname(this.input.value) : false) || last_path(this.fs_favorites, this.modalId)
     }
   },
   mounted: function() {
-    this.path = pathmod.dirname(this.input.value) || last_path();
+    this.path = this.get_current_path();
     this.filter_input = this.$el.querySelector('#' + this.filterId);
   },
   computed: {
@@ -270,7 +273,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   /* Begin Bulma Modal */
   /*
     The MIT License (MIT)
