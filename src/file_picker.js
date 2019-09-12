@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import FilePicker from './components/file_picker.vue';
 import {
-  file_system_favorites
+  file_system_favorites,
+  file_system_favorites_from_input_data
 } from './files_api.js';
 
 /**
@@ -22,6 +23,7 @@ export function attach_filepickers() {
     for(let fp_input of filepicker_inputs()) {
       let fp_id = fp_input.id;
       let sacrificial_div = document.createElement('div');
+      let favorites_from_input = file_system_favorites_from_input_data(fp_input);
       fp_input.parentElement.append(sacrificial_div);
 
       let vue = new Vue({
@@ -31,7 +33,7 @@ export function attach_filepickers() {
           {
             props: {
               input: fp_input,
-              fs_favorites: favorites
+              fs_favorites: (favorites_from_input) ? favorites_from_input : favorites
             }
           }
         )

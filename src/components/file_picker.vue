@@ -192,6 +192,7 @@ export default {
       this.path = pathmod.dirname(this.staged_value);
       set_last_path(this.path, this.modalId);
       this.input.value = this.staged_value;
+      this.input.dispatchEvent(new Event('keyup'));
       this.hide();
     },
     cancel() {

@@ -16,7 +16,8 @@ Edit your Batch Connect `form.yml` so that the input you want to add a file pick
   input_file:
     label: 'Input File'
     data-filepicker: true
-    readonly: true  # optionally only allow editing through the file picker
+    data-file_picker_favorites: '[{"title": "Team Project", "href": "/fs/project/PZS0714"}]'  # Optionally provide FS favorites manually
+    readonly: true  # Optionally only allow editing through the file picker
 ```
 
 To navigate into a directory double click the entry. To select a directory just use a single click. The current directory may be filtered, and the filtering engine supports plain text and JavaScript-flavored regular expressions.

@@ -20,7 +20,7 @@ export function last_path(favorites=[], namespace='') {
   const stored = window.localStorage.getItem('files_last_path' + namespace);
   const home_dir = (favorites.length > 0) ? favorites[0].href : false;
   const root = '/';
-  
+
   return stored || home_dir || root;
 }
 
@@ -51,4 +51,31 @@ export function file_system_favorites() {
       return [];
     });
   }
+}
+
+/**
+ * Attempts to get FS favorites from the input's data attributes at key file_picker_favorites
+ *
+ * If data-file_picker_favorites is set it is expected to be a string containing JSON in the format:
+ *
+ * [
+ *   {
+ *     "title": "...",
+ *     "href": "..."
+ *   },
+ *   ...
+ * ]
+ *
+ * @param  InputElement input
+ * @return Array<Object>
+ */
+export function file_system_favorites_from_input_data(input) {
+  const data_attribute = input.dataset['file_picker_favorites'];
+  try {
+    return (data_attribute) ? JSON.parse(data_attribute) : false;
+  } catch(error) {
+    console.error("Unable to use favorites from the data attribute because: " + error);
+    return false;
+  }
+
 }

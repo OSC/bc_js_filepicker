@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.3.0] - 2019-09-12
+### Added
+- Added ability to set FS favorites manually using data attributes
+- Selecting a file now emits a `keyup` event for the targeted input element
+
 ## [0.2.0] - 2019-08-23
 ### Added
 - Added fallback for FS favorites: set manually using window.file_picker_favorites, Dashboard (with an attempted Fetch if necessary), and finally '/'
@@ -40,7 +45,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial release!
 
-[Unreleased]: https://github.com/OSC/ood_js_filepicker/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/OSC/ood_js_filepicker/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/OSC/ood_js_filepicker/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/OSC/ood_js_filepicker/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/OSC/ood_js_filepicker/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/OSC/ood_js_filepicker/compare/v0.0.1...v0.1.0
