@@ -65,6 +65,8 @@ export function file_system_favorites() {
  *   },
  *   ...
  * ]
+ * 
+ * Remember that because JSON is a subset of YAML it is necessary to quote the values.
  *
  * @param  InputElement input
  * @return Array<Object>
