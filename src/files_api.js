@@ -67,7 +67,7 @@ export function file_system_favorites() {
  * ]
  *
  * @param  InputElement input
- * @return Array<Object>
+ * @return Array<Object> | false
  */
 export function file_system_favorites_from_input_data(input) {
   const data_attribute = input.dataset['file_picker_favorites'];

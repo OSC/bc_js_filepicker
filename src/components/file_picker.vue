@@ -26,7 +26,7 @@
                       <a
                         :class="classForCurrentPath(entry)"
                         v-for="entry in fs_favorites"
-                        v-on:click="entryDblClicked(entry, $event)"
+                        v-on:click="menuClicked(entry, $event)"
                       ><span class="fa fa-folder">&nbsp;</span>{{entry.title}}</a>
                     </div>
                   </div>
@@ -36,7 +36,7 @@
                     <ol class="breadcrumb">
                       <li :class="slugClass(index)"
                           v-for="(slug, index) in slugs"
-                          aria-current="page"><a v-on:click="entryDblClicked({size: 'breadcrumb', path: pathToHere(index)}, $event)">{{slug}}</a>
+                          aria-current="page"><a v-on:click="menuClicked({size: 'breadcrumb', path: pathToHere(index)}, $event)">{{slug}}</a>
                       </li>
                     </ol>
                   </nav>
@@ -56,7 +56,7 @@
                   </div>
                   <div class="list-group overflow-auto" v-else="!showSpinner()">
                     <a
-                      :class="classForCurrentPath(entry)"
+                      :class="classForCurrentPathSelectable(entry)"
                       v-for="entry in filteredEntries()"
                       v-on:click="entryClicked(entry, $event)"
                       v-on:dblclick="entryDblClicked(entry, $event)"
@@ -91,7 +91,7 @@ import {
  * Presents a modal to the user allowing them to select files.
  */
 export default {
-  props: ['input', 'fs_favorites'],
+  props: ['input', 'fs_favorites', 'show_hidden', 'target_file_type', 'target_file_type_pattern'],
   data: function() {
     return {
       entriesFilter: null,
@@ -140,10 +140,15 @@ export default {
       // add fs entries and the back directory
       this.fs_entries = [{
           size: 'dir',
+          name: '.'
+      }, {
+          size: 'dir',
           name: '..'
       }].concat(
-        json.files.filter((entry) => { return ! entry.name.startsWith('.') })
-        );
+        json.files.filter((entry) => {
+          return ((this.show_hidden) ? true : (! entry.name.startsWith('.')))
+        })
+      );
       this.loading = false;
       this.error = false;
       set_last_path(path, this.modalId);
@@ -173,17 +178,23 @@ export default {
       this.selected_element.classList.add('active');
     },
     entryClicked: function(entry, event) {
-      this.changeSelection(event);
-      this.staged_value = pathmod.resolve(this.path, entry.name);
+      if(this.is_entry_selectable(entry)) {
+        this.changeSelection(event);
+        this.staged_value = pathmod.resolve(this.path, entry.name);
+      }
     },
     entryDblClicked: function(entry, event) {
       if(entry.size && entry.size === 'dir') {
         this.path = pathmod.resolve(this.path, entry.name);
-      } else if(entry.size && entry.size === 'breadcrumb') {
+        this.updateEntries(this.path);
+      }
+    },
+    menuClicked: function(entry, event) {
+      if(entry.size && entry.size === 'breadcrumb') {
         event.preventDefault();
         this.path = entry.path;
       } else {
-        this.path = pathmod.resolve(this.path, entry.href);
+        this.path = entry.href;
       }
 
       this.updateEntries(this.path);
@@ -246,8 +257,49 @@ export default {
 
       return (is_active_favorite || is_active_selection) ? 'list-group-item active' : 'list-group-item';
     },
+    classForCurrentPathSelectable(entry) {
+      const base_class = this.classForCurrentPath(entry);
+      return (this.is_entry_disabled(entry)) ? base_class + ' disabled' : base_class;
+    },
     get_current_path: function() {
       return ((this.input.value) ? pathmod.dirname(this.input.value) : false) || last_path(this.fs_favorites, this.modalId)
+    },
+    is_entry_disabled(entry) {
+      if(entry.size === 'dir') {
+        return false;
+      } else {
+        return ! this.is_entry_selectable(entry);
+      }
+    },
+    is_entry_selectable(entry) {
+      const dirs_selectable = this.target_file_type === 'dirs' || this.target_file_type === 'both';
+      const files_selectable = this.target_file_type === 'files' || this.target_file_type === 'both';
+
+      if(entry.size === 'dir') {
+        // Check dir
+        if(! dirs_selectable) {
+          // Cannot select dirs
+          return false
+        } else if(this.target_file_type_pattern) {
+          // Check name
+          return !! entry.name.match(this.target_file_type_pattern);
+        } else {
+          // No pattern matching and dirs are selectable
+          return true;
+        }
+      } else {
+        // Check file
+        if(! files_selectable) {
+          // Cannot select files
+          return false;
+        } else if(this.target_file_type_pattern) {
+          // Check name
+          return !! entry.name.match(this.target_file_type_pattern);
+        } else {
+          // No pattern matching and files are selectable
+          return true;
+        }
+      }
     }
   },
   mounted: function() {

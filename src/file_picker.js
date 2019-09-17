@@ -14,6 +14,56 @@ function filepicker_inputs() {
 }
 
 /**
+ * Shall this file picker show dot files?
+ * @param  {Input} target input element
+ * @return {Boolean}
+ */
+function allow_showing_hidden(input) {
+  return input.dataset['show_hidden'] || false;
+}
+
+/**
+ * Get file/dir/both setting from the input's data attributes
+ * @param  {Input} input The target input element
+ * @return {String}      One of files, dirs, or both
+ */
+function allow_selecting_files_folders_or_both(input) {
+  const selection = input.dataset['target_file_type'];
+  if(! selection) {
+    return 'both';
+  }
+
+  const match = {
+    'files': 'files',
+    'dirs': 'dirs',
+    'both': 'both'
+  }[selection];
+
+  if(! match) {
+    console.error(`${selection} is not one of [files, dirs, both]. Using both.`);
+    return 'both';
+  } else {
+    return match;
+  }
+}
+
+/**
+ * Get file/dir pattern from the input's data attributes
+ *
+ * @param  {Input} input The target input element
+ * @return {RegExp | false}       The RegExp to use when matching entry names or false
+ */
+function allow_target_file_pattern(input) {
+  const target_file_type = input.dataset['target_file_pattern'];
+  try {
+    return (!! target_file_type) ? new RegExp(target_file_type) : false
+  } catch(error) {
+    console.error(`Unable to compile regular expression: ${target_file_type}. Not using target_file_type.`)
+    return false;
+  }
+}
+
+/**
  * Attaches file pickers to the DOM
  *
  * File pickers are inputs with a data attribute of filepicker
@@ -33,7 +83,10 @@ export function attach_filepickers() {
           {
             props: {
               input: fp_input,
-              fs_favorites: (favorites_from_input) ? favorites_from_input : favorites
+              fs_favorites: (favorites_from_input) ? favorites_from_input : favorites,
+              show_hidden: allow_showing_hidden(fp_input),
+              target_file_type: allow_selecting_files_folders_or_both(fp_input),
+              target_file_pattern: allow_target_file_pattern(fp_input)
             }
           }
         )
