@@ -16,8 +16,19 @@ Edit your Batch Connect `form.yml` so that the input you want to add a file pick
   input_file:
     label: 'Input File'
     data-filepicker: true
-    data-file_picker_favorites: '[{"title": "Team Project", "href": "/fs/project/PZS0714"}]'  # Optionally provide FS favorites manually
-    readonly: true  # Optionally only allow editing through the file picker
+    # Optionally show dot files and folders; defaults to false
+    data-show-hidden: true
+    # Optionally permit selection of only files or directories; defaults to both
+    data-target-file-type: files  # Valid values are: files, dirs, or both
+    # Optionally specify a pattern for the name of selectable files or directories; defaults to matching anything
+    # Uses JavaScript regular expressions: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+    data-target-file-pattern: \.py$  # python files
+    # Optionally provide FS favorites manually
+    data-file_picker_favorites: '[{"title": "Team Project", "href": "/fs/project/PZS0714"}]'
+    # Optionally only allow editing through the file picker; defaults to false
+    readonly: true
+    # Optionally set a static starting directory by setting the value
+    value: /users/mrodgers/my_project/.
 ```
 
 To navigate into a directory double click the entry. To select a directory just use a single click. The current directory may be filtered, and the filtering engine supports plain text and JavaScript-flavored regular expressions.

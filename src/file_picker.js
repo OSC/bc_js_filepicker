@@ -19,16 +19,16 @@ function filepicker_inputs() {
  * @return {Boolean}
  */
 function allow_showing_hidden(input) {
-  return input.dataset['show_hidden'] || false;
+  return input.dataset.showHidden || false;
 }
 
 /**
- * Get file/dir/both setting from the input's data attributes
+ * Get files/dirs/both setting from the input's data attributes
  * @param  {Input} input The target input element
  * @return {String}      One of files, dirs, or both
  */
 function allow_selecting_files_folders_or_both(input) {
-  const selection = input.dataset['target_file_type'];
+  const selection = input.dataset.targetFileType;
   if(! selection) {
     return 'both';
   }
@@ -54,11 +54,11 @@ function allow_selecting_files_folders_or_both(input) {
  * @return {RegExp | false}       The RegExp to use when matching entry names or false
  */
 function allow_target_file_pattern(input) {
-  const target_file_type = input.dataset['target_file_pattern'];
+  const target_file_type = input.dataset.targetFilePattern;
   try {
     return (!! target_file_type) ? new RegExp(target_file_type) : false
   } catch(error) {
-    console.error(`Unable to compile regular expression: ${target_file_type}. Not using target_file_type.`)
+    console.error(`Unable to compile regular expression: ${target_file_type}. Not using target-file-type.`)
     return false;
   }
 }

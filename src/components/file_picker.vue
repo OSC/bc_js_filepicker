@@ -91,7 +91,7 @@ import {
  * Presents a modal to the user allowing them to select files.
  */
 export default {
-  props: ['input', 'fs_favorites', 'show_hidden', 'target_file_type', 'target_file_type_pattern'],
+  props: ['input', 'fs_favorites', 'show_hidden', 'target_file_type', 'target_file_pattern'],
   data: function() {
     return {
       entriesFilter: null,
@@ -280,9 +280,9 @@ export default {
         if(! dirs_selectable) {
           // Cannot select dirs
           return false
-        } else if(this.target_file_type_pattern) {
+        } else if(this.target_file_pattern) {
           // Check name
-          return !! entry.name.match(this.target_file_type_pattern);
+          return !! entry.name.match(this.target_file_pattern);
         } else {
           // No pattern matching and dirs are selectable
           return true;
@@ -292,9 +292,9 @@ export default {
         if(! files_selectable) {
           // Cannot select files
           return false;
-        } else if(this.target_file_type_pattern) {
+        } else if(this.target_file_pattern) {
           // Check name
-          return !! entry.name.match(this.target_file_type_pattern);
+          return !! entry.name.match(this.target_file_pattern);
         } else {
           // No pattern matching and files are selectable
           return true;
