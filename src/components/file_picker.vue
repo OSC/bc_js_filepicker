@@ -504,6 +504,11 @@ export default {
 
   /* End Bulma Modal */
 
+  .modal-body {
+    height: 400px;
+    overflow-y: auto;
+  }
+
   .glyphicon.spinning {
       animation: spin 1s infinite linear;
       -webkit-animation: spin2 1s infinite linear;

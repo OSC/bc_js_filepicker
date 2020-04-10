@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.4.2] - 2020-4-10
+### Fixed
+- Fixed modal content to overflow properly so that the modal footer is sticky.
+
 ## [0.4.1] - 2019-12-09
 ### Fixed
 - Updated dependencies
