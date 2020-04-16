@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.4.3] - 2020-4-15
+### Fixed
+- Fix issue where the modal footer wasn't showing for some users with lots of favorite paths and or smaller screen sizes.
+- Removed unnecessary margins on file picker modal.
+
 ## [0.4.2] - 2020-4-10
 ### Fixed
 - Fixed modal content to overflow properly so that the modal footer is sticky.
