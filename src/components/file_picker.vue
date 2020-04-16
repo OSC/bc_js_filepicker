@@ -505,8 +505,9 @@ export default {
   /* End Bulma Modal */
 
   .modal-body {
-    height: 400px;
+    height: auto !important;
     overflow-y: auto;
+    max-height: calc(100vh - 360px) !important;
   }
 
   .glyphicon.spinning {
