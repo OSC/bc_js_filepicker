@@ -434,7 +434,6 @@ export default {
 
   .modal-content,
   .modal-card {
-    margin: 0 20px;
     max-height: calc(100vh - 160px);
     overflow: auto;
     position: relative;
