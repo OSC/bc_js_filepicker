@@ -25,6 +25,8 @@ Edit your Batch Connect `form.yml` so that the input you want to add a file pick
     data-target-file-pattern: \.py$  # python files
     # Optionally provide FS favorites manually
     data-file_picker_favorites: '[{"title": "Team Project", "href": "/fs/project/PZS0714"}]'
+    # Optionally set a default directory
+    data-default-directory: '/fs/project/PZS0714' 
     # Optionally only allow editing through the file picker; defaults to false
     readonly: true
     # Optionally set a static starting directory by setting the value
