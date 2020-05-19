@@ -262,7 +262,7 @@ export default {
       return (this.is_entry_disabled(entry)) ? base_class + ' disabled' : base_class;
     },
     get_current_path: function() {
-      return ((this.input.value) ? pathmod.dirname(this.input.value) : false) || last_path(this.fs_favorites, this.modalId)
+      return ((this.input.value) ? pathmod.dirname(this.input.value) : this.input.dataset.defaultDirectory) || last_path(this.fs_favorites, this.modalId)
     },
     is_entry_disabled(entry) {
       if(entry.size === 'dir') {
