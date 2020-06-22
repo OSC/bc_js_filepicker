@@ -6,7 +6,7 @@
   "author": "Morgan Rodgers <morgan.rodgers@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@babel/core": "^7.10.2",
+    "@babel/core": "^7.10.3",
     "@babel/preset-env": "^7.10.2",
     "babel-loader": "^8.1.0",
     "css-loader": "^3.5.3",
