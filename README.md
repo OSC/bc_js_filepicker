@@ -5,6 +5,10 @@
 
 A file picker for use with Batch Connect applications.
 
+## Demo ##
+
+![filepicker demo](docs/file_picker_demo.gif)
+
 ## Usage ##
 
 Download the latest release of [`form.js`](https://github.com/OSC/bc_js_filepicker/releases/latest) and place it in the root directory of your Batch Connect application. For example `/var/www/ood/apps/sys/bc_jupyter/form.js`.
