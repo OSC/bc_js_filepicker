@@ -25,7 +25,7 @@ export function last_path(favorites=[], namespace='') {
 }
 
 export function list_path(path) {
-  const fs_api_root = '/pun/sys/files/api/v1/fs/';
+  const fs_api_root = '/pun/sys/dashboard/files/fs/';
 
   return fetch(pathmod.resolve(fs_api_root, path.replace(/(^\/)/, '')), {
     credentials: 'same-origin'
