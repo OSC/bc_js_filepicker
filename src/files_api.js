@@ -28,7 +28,8 @@ export function list_path(path) {
   const fs_api_root = '/pun/sys/files/api/v1/fs/';
 
   return fetch(pathmod.resolve(fs_api_root, path.replace(/(^\/)/, '')), {
-    credentials: 'same-origin'
+    credentials: 'same-origin',
+    redirect: 'follow',
   });
 }
 
