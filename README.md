@@ -1,6 +1,7 @@
 # Batch Connect - JS File Picker
 
 ![GitHub Release](https://img.shields.io/github/release/osc/bc_js_filepicker.svg)
+[![Download latest form.js](https://github.com/OSC/bc_js_filepicker/actions/workflows/release.yml/badge.svg)](https://github.com/OSC/bc_js_filepicker/actions/workflows/release.yml)
 [![GitHub License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 A file picker for use with Batch Connect applications.
