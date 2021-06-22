@@ -4,7 +4,7 @@
         type="button"
         class="btn btn-primary"
         style="margin-top: 15px;"
-        v-on:click="visibilityChanged">Select Working Directory
+        v-on:click="visibilityChanged">Select Path
     </button>
     <div :id="modalId" :class="(show) ? 'modal is-active' : 'modal'" tabindex="-1" role="dialog">
       <div class="modal-background" v-on:click="cancel"></div>
