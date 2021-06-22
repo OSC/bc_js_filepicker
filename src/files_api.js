@@ -54,7 +54,7 @@ export function file_system_favorites() {
   if (window.file_picker_favorites) {
     return Promise.resolve(window.file_picker_favorites);
   } else if (
-    !!window.location.href.match(new RegExp('pun/(sys|dev)/(ood-)?dashboard'))
+    !!window.location.href.match(new RegExp('pun/(sys|dev)/dashboard'))
   ) {
     return Promise.resolve(extract_favorites_from_document(document));
   } else {
