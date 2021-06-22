@@ -4,7 +4,7 @@
         type="button"
         class="btn btn-primary"
         style="margin-top: 15px;"
-        v-on:click="visibilityChanged">Select File
+        v-on:click="visibilityChanged">Select Path
     </button>
     <div :id="modalId" :class="(show) ? 'modal is-active' : 'modal'" tabindex="-1" role="dialog">
       <div class="modal-background" v-on:click="cancel"></div>
@@ -22,11 +22,13 @@
                 <div class="col-sm-5" v-if="showFsFavorites">
                   <div class="panel panel-default">
                     <div class="panel-heading">Favorites</div>
-                    <div class="list-group">
+                    <div class="list-group text-nowrap">
                       <a
+                        role="button"
                         :class="classForCurrentPath(entry)"
                         v-for="entry in fs_favorites"
                         v-on:click="menuClicked(entry, $event)"
+                        v-bind:key="entry.title"
                       ><span class="fa fa-folder">&nbsp;</span>{{entry.title}}</a>
                     </div>
                   </div>
@@ -34,9 +36,11 @@
                 <div :class="fsEntryColWidth">
                   <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                      <li :class="slugClass(index)"
+                      <li
+                          :class="slugClass(index)"
                           v-for="(slug, index) in slugs"
-                          aria-current="page"><a v-on:click="menuClicked({size: 'breadcrumb', path: pathToHere(index)}, $event)">{{slug}}</a>
+                          aria-current="page"
+                          v-bind:key="index"><a role="button" v-on:click="menuClicked({size: 'breadcrumb', path: pathToHere(index)}, $event)">{{slug}}</a>
                       </li>
                     </ol>
                   </nav>
@@ -60,6 +64,7 @@
                       v-for="entry in filteredEntries()"
                       v-on:click="entryClicked(entry, $event)"
                       v-on:dblclick="entryDblClicked(entry, $event)"
+                      v-bind:key="entry"
                     ><span :class="iconClasses(entry)" :style="iconStyles(entry)">&nbsp;</span>{{entry.name}}</a>
                   </div>
                 </div>
@@ -107,10 +112,10 @@ export default {
   },
   methods: {
     iconClasses: function(entry) {
-      return (entry.size === 'dir') ? 'fa fa-folder' : 'fa fa-file';
+      return (entry.type === 'd') ? 'fa fa-folder' : 'fa fa-file';
     },
     iconStyles: function(entry) {
-      return (entry.size === 'dir') ? 'color: #eccb00;' : 'color: #e6e6e6;';
+      return (entry.type === 'd') ? 'color: #eccb00;' : 'color: #e6e6e6;';
     },
     showSpinner: function() {
       return this.fs_entries.length === 0 || this.loading;
@@ -184,7 +189,7 @@ export default {
       }
     },
     entryDblClicked: function(entry, event) {
-      if(entry.size && entry.size === 'dir') {
+      if(entry.type === 'd') {
         this.path = pathmod.resolve(this.path, entry.name);
         this.updateEntries(this.path);
       }
@@ -255,7 +260,7 @@ export default {
         this.staged_value === pathmod.resolve(this.path, entry.name)
       );
 
-      return (is_active_favorite || is_active_selection) ? 'list-group-item active' : 'list-group-item';
+      return (is_active_favorite || is_active_selection) ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action';
     },
     classForCurrentPathSelectable(entry) {
       const base_class = this.classForCurrentPath(entry);
@@ -265,7 +270,7 @@ export default {
       return ((this.input.value) ? pathmod.dirname(this.input.value) : this.input.dataset.defaultDirectory) || last_path(this.fs_favorites, this.modalId)
     },
     is_entry_disabled(entry) {
-      if(entry.size === 'dir') {
+      if(entry.type === 'd') {
         return false;
       } else {
         return ! this.is_entry_selectable(entry);
@@ -275,7 +280,7 @@ export default {
       const dirs_selectable = this.target_file_type === 'dirs' || this.target_file_type === 'both';
       const files_selectable = this.target_file_type === 'files' || this.target_file_type === 'both';
 
-      if(entry.size === 'dir') {
+      if(entry.type === 'd') {
         // Check dir
         if(! dirs_selectable) {
           // Cannot select dirs
