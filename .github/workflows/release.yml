@@ -1,4 +1,4 @@
-name: Build Artifact
+name: Build form.js
 
 on:
   create:
