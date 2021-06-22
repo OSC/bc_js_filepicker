@@ -6,23 +6,22 @@ module.exports = {
   entry: path.join(__dirname, '/src/main.js'),
   output: {
     path: path.resolve(__dirname),
-    filename: 'form.js'
+    filename: 'form.js',
   },
   module: {
     rules: [
-      { test: /\.js$/,
+      {
+        test: /\.js$/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env']
-          }
-        }
+            presets: ['@babel/preset-env'],
+          },
+        },
       },
       { test: /\.vue$/, use: 'vue-loader' },
-      { test: /\.css$/, use: ['vue-style-loader', 'css-loader']},
-    ]
+      { test: /\.css$/, use: ['vue-style-loader', 'css-loader'] },
+    ],
   },
-  plugins: [
-    new VueLoaderPlugin(),
-  ]
+  plugins: [new VueLoaderPlugin()],
 };
