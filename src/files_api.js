@@ -9,13 +9,15 @@ function extract_favorites_from_document(doc) {
     let { title, href } = element
 
     // Interactive regex explorer:
-    // https://regex101.com/r/pkOLR3/1/
-    let extractPath = new RegExp('pun/(sys|dev)/(ood-)?dashboard/files/fs(.*)')
+    // https://regex101.com/r/7sfoEw/1
+    let extractPath = new RegExp(
+      'pun/(sys|dev)/(?:ood-)?dashboard/files/fs(?<path>.*)',
+    )
     let parsed = extractPath.exec(href)
 
     favorites.push({
       title,
-      href: parsed[3],
+      href: parsed.groups.path || '/',
     })
   }
 
