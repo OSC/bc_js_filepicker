@@ -1,0 +1,36 @@
+name: Build Artifact
+
+on:
+  create:
+    tags:
+      - v*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [v12.19.1]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # Install Yarn for building
+      - name: Install Yarn
+        run: npm install yarn
+
+      # Build form.js
+      - name: Build form.js with Webpack
+        run: yarn webpack
+
+      # Upload artifact to GitHub
+      - uses: actions/upload-artifact@v2
+        with:
+          name: form.js
+          path: form.js
