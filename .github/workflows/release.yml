@@ -30,7 +30,7 @@ jobs:
 
       # Build form.js
       - name: Build form.js with Webpack
-        run: yarn webpack
+        run: yarn build
 
       # Upload artifact to GitHub
       - uses: actions/upload-artifact@v2
