@@ -33,7 +33,8 @@ jobs:
         run: yarn build
 
       # Upload artifact to GitHub
-      - uses: actions/upload-artifact@v3
+      - name: Upload Release files
+        uses: softprops/action-gh-release@v1
         with:
-          name: form.js
-          path: form.js
+          files: |
+            form.js
