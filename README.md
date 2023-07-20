@@ -48,9 +48,21 @@ To setup the project for development run the command:
 
 `yarn install`
 
-To build the project run the command:
+To build the project in development mode run the command:
 
-`yarn run build`
+`yarn dev`
+
+This will build a `form.js` that is not minified and can be
+used for developmental purposes.
+
+## Production build ##
+
+To build a `form.js` to be used in production run this:
+
+`yarn build`
+
+This will build a `form.js` that is minified and ready to be
+used for production applications.
 
 ## Contributing
 
