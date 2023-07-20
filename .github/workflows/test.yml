@@ -1,9 +1,7 @@
-name: Build form.js
+name: Tests
 
 on:
-  push:
-    tags:
-      - '*'
+  pull_request:
 
 jobs:
   build:
@@ -32,8 +30,3 @@ jobs:
       - name: Build form.js with Webpack
         run: yarn build
 
-      # Upload artifact to GitHub
-      - uses: actions/upload-artifact@v3
-        with:
-          name: form.js
-          path: form.js
