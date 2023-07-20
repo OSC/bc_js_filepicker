@@ -13,10 +13,16 @@ function extract_favorites_from_document(doc) {
     let extractPath = new RegExp('dashboard/files/fs(?<path>.*)');
     let parsed = extractPath.exec(href);
 
-    favorites.push({
-      title,
-      href: parsed.groups.path || '/',
-    });
+    // extractPath is for local filesystems only. remote filesystems
+    // like for example 'dashboard/files/osu one drive' should not be
+    // included.
+    if(parsed != null) {
+      favorites.push({
+        title,
+        href: parsed.groups.path || '/',
+      });
+    }
+
   }
 
   return favorites;
