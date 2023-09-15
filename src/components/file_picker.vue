@@ -203,6 +203,7 @@ export default {
       }
 
       this.updateEntries(this.path);
+      this.staged_value = this.path;
     },
     save: function() {
       this.path = pathmod.dirname(this.staged_value);
