@@ -29,7 +29,7 @@
                         v-for="entry in fs_favorites"
                         v-on:click="menuClicked(entry, $event)"
                         v-bind:key="entry.title"
-                      ><span class="fa fa-folder">&nbsp;</span>{{entry.title}}</a>
+                      ><span class="fa fa-folder mr-2">&nbsp;</span>{{entry.title}}</a>
                     </div>
                   </div>
                 </div>
@@ -112,7 +112,7 @@ export default {
   },
   methods: {
     iconClasses: function(entry) {
-      return (entry.type === 'd') ? 'fa fa-folder' : 'fa fa-file';
+      return (entry.type === 'd') ? 'fa fa-folder mr-2' : 'fa fa-file mr-2';
     },
     iconStyles: function(entry) {
       return (entry.type === 'd') ? 'color: #eccb00;' : 'color: #e6e6e6;';
