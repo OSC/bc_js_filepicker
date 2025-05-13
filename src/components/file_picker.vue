@@ -47,7 +47,7 @@
                   <div class="form-group row">
                     <label :for="filterId" class="col-sm-2 col-form-label">Filter</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" :id="filterId" placeholder="file.txt" v-on:input="updateEntriesFilter()">
+                      <input type="text" class="form-control" :id="filterId" placeholder="Search..." v-on:input="updateEntriesFilter()">
                     </div>
                   </div>
                   <div class="alert alert-danger" v-if="showError()" role="alert">
